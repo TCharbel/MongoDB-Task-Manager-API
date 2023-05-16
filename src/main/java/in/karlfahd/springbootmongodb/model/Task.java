@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 //import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,9 @@ public class Task {
 	@NotNull(message ="description cannot be null")
 	private String description;
 	
+	@Pattern(regexp = "^(completed|not completed)$", message = "status must be 'completed' or 'not completed'")
 	@NotNull(message ="status cannot be null")
-	private Boolean status;
+	private String status;
 	
 	
 	
@@ -57,32 +59,26 @@ public class Task {
 		this.description = description;
 	}
 
-	public Boolean getStatus() {
+	
+
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
 
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+	@NotNull(message ="dueDate cannot be null")
+	 private Date dueDate;
 
-	private Date createdAt;
-	
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+	    public Date getDueDate() {
+	        return dueDate;
+	    }
 
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	private Date updatedAt;
-	
+	    public void setDueDate(Date dueDate) {
+	        this.dueDate = dueDate;
+	    }
+	    //YY-MM-DDTH
 }

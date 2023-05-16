@@ -2,6 +2,7 @@ package in.karlfahd.springbootmongodb.controller;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,31 @@ public class TaskController {
 		}
 	}
 	
+	@GetMapping("/tasks/DueDate")
+    public ResponseEntity<?> getTasksWithLessThanThreeDaysDue() {
+        List<Task> tasks = todoRepo.findAll();
+        List<Task> tasksWithLessThanThreeDaysDue = new ArrayList<>();
+
+        Date currentDate = new Date();
+        long threeDaysInMillis = 3 * 24 * 60 * 60 * 1000; // Convert 3 days to milliseconds
+
+        for (Task task : tasks) {
+            if (task.getDueDate() != null) {
+                long timeDifference = task.getDueDate().getTime() - currentDate.getTime();
+                if (timeDifference < threeDaysInMillis && task.getStatus()!="completed") {
+                    tasksWithLessThanThreeDaysDue.add(task);
+                }
+            }
+        }
+
+        if (!tasksWithLessThanThreeDaysDue.isEmpty()) {
+            return new ResponseEntity<>(tasksWithLessThanThreeDaysDue, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No tasks with less than three days due", HttpStatus.NOT_FOUND);
+        }
+    }
 	
+
 	@PutMapping("/tasks/{id}")
 	public ResponseEntity<?> updateById(@PathVariable("id")String id, @RequestBody Task task){
 		Optional<Task> taskOptional = todoRepo.findById(id);
@@ -76,7 +101,7 @@ public class TaskController {
 			taskToSave.setStatus(task.getStatus()!=null ? task.getStatus(): taskToSave.getStatus());
 			taskToSave.setTask(task.getTask()!=null ? task.getTask(): taskToSave.getTask());
 			taskToSave.setDescription(task.getDescription()!=null ? task.getDescription() : taskToSave.getDescription());
-			taskToSave.setUpdatedAt(new Date(System.currentTimeMillis()));
+			taskToSave.setDueDate(task.getDueDate()!=null ? task.getDueDate(): taskToSave.getDueDate());
 			todoRepo.save(taskToSave);
 			return new ResponseEntity<>(taskToSave, HttpStatus.OK);
 		}else {

@@ -24,7 +24,8 @@ public class TaskServiceImpl implements TaskService {
 		if(todoOptional.isPresent()) {
 			throw new TaskCollectionException(TaskCollectionException.TaskAlreadyExists());
 		}else {
-			task.setCreatedAt(new Date(System.currentTimeMillis()));
+			//task.setCreatedAt(new Date(System.currentTimeMillis()));
+			
 			todoRepo.save(task);
 		}
 	}
